@@ -31,7 +31,7 @@ fi
 
 # ZIPファイルの作成
 echo "ファイルをパッケージ化しています..."
-zip -r "$ZIP_NAME" * -x "*.git*" -x "*.DS_Store" -x "*.zip" -x "*.sh"
+zip -r "$ZIP_NAME" * -x "*.git*" -x "*.DS_Store" -x "*.zip" -x "*.sh" -x "dist/*" -x "node_modules/*"
 
 # 成功メッセージ
 if [ $? -eq 0 ]; then
