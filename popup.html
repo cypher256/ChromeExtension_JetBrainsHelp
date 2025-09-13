@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>JetBrains オンラインヘルプ英語日本語切り替え</title>
+  <style>
+    body {
+      width: 220px;
+      padding: 10px;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+    h2 {
+      font-size: 16px;
+      margin-top: 0;
+      color: #333;
+      text-align: center;
+    }
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    a.button {
+      display: block;
+      padding: 8px 12px;
+      background-color: #5C6BC0;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+      text-align: center;
+      transition: background-color 0.2s;
+    }
+    a.button:hover {
+      background-color: #3F51B5;
+    }
+    a.button:disabled,
+    a.button.disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>JetBrains 言語切替</h2>
+  <div class="button-container">
+    <a href="#" class="button" id="switchToJapanese">日本語 (pleiades.io)</a>
+    <a href="#" class="button" id="switchToEnglish">English (jetbrains.com)</a>
+  </div>
+  <div class="status" id="status"></div>
+  <script src="popup.js"></script>
+</body>
+</html>

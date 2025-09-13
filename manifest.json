@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "JetBrains オンラインヘルプ英語日本語切り替え",
+  "version": "1.0",
+  "description": "日本語(pleiades.io)と英語(jetbrains.com)のJetBrainsヘルプサイトを簡単に切り替えるための拡張機能",
+  "icons": {
+    "16": "images/icon16.png",
+    "32": "images/icon32.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "32": "images/icon32.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "https://pleiades.io/help/*",
+    "https://www.jetbrains.com/help/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://pleiades.io/help/*",
+        "https://www.jetbrains.com/help/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}
