@@ -18,14 +18,8 @@
     link.id = 'language-switch-btn';
     link.textContent = isJapanese ? 'English' : '日本語';
     
-    // URLを設定
-    const currentUrl = window.location.href;
-    const pathAfterHelp = currentUrl.split('/help/')[1];
-    if (isJapanese) {
-      link.href = `https://www.jetbrains.com/help/${pathAfterHelp}`;
-    } else {
-      link.href = `https://pleiades.io/help/${pathAfterHelp}`;
-    }
+    // 初期URLを設定（動的に更新される）
+    updateButtonUrl(link, isJapanese);
     
     // インラインスタイル設定
     link.style.cssText = `
@@ -63,12 +57,29 @@
     link.addEventListener('click', function(e) {
       if (e.button === 0 && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        window.location.href = this.href;
+        // クリック時に現在のURLから動的に遷移先を計算
+        const currentUrl = window.location.href;
+        const pathAfterHelp = currentUrl.split('/help/')[1];
+        const targetUrl = isJapanese 
+          ? `https://www.jetbrains.com/help/${pathAfterHelp}`
+          : `https://pleiades.io/help/${pathAfterHelp}`;
+        window.location.href = targetUrl;
       }
     });
     
     // 本体にリンク追加
     document.body.appendChild(link);
+  }
+
+  // ボタンのURLを更新する関数
+  function updateButtonUrl(link, isJapanese) {
+    const currentUrl = window.location.href;
+    const pathAfterHelp = currentUrl.split('/help/')[1];
+    if (isJapanese) {
+      link.href = `https://www.jetbrains.com/help/${pathAfterHelp}`;
+    } else {
+      link.href = `https://pleiades.io/help/${pathAfterHelp}`;
+    }
   }
 
   // サイトに基づいて最適な位置を計算
@@ -116,4 +127,56 @@
       link.style.right = `${calculateOptimalPosition()}px`;
     }
   });
+
+  // SPAのURL変更を検知する
+  let lastUrl = location.href;
+  new MutationObserver(() => {
+    const url = location.href;
+    if (url !== lastUrl) {
+      lastUrl = url;
+      // URL変更を検知したらボタンのhrefを更新
+      const link = document.getElementById('language-switch-btn');
+      if (link) {
+        const isJapanese = window.location.hostname.includes('pleiades.io');
+        updateButtonUrl(link, isJapanese);
+      }
+    }
+  }).observe(document, {subtree: true, childList: true});
+
+  // pushState/replaceStateのオーバーライドでSPA遷移を検知
+  (function() {
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+    
+    history.pushState = function() {
+      originalPushState.apply(history, arguments);
+      setTimeout(() => {
+        const link = document.getElementById('language-switch-btn');
+        if (link) {
+          const isJapanese = window.location.hostname.includes('pleiades.io');
+          updateButtonUrl(link, isJapanese);
+        }
+      }, 0);
+    };
+    
+    history.replaceState = function() {
+      originalReplaceState.apply(history, arguments);
+      setTimeout(() => {
+        const link = document.getElementById('language-switch-btn');
+        if (link) {
+          const isJapanese = window.location.hostname.includes('pleiades.io');
+          updateButtonUrl(link, isJapanese);
+        }
+      }, 0);
+    };
+    
+    // popstateイベント（ブラウザの戻る/進む）でも更新
+    window.addEventListener('popstate', function() {
+      const link = document.getElementById('language-switch-btn');
+      if (link) {
+        const isJapanese = window.location.hostname.includes('pleiades.io');
+        updateButtonUrl(link, isJapanese);
+      }
+    });
+  })();
 })();
